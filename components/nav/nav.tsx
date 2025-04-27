@@ -1,7 +1,11 @@
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
+import { auth, currentUser } from '@clerk/nextjs/server'
 import Link from 'next/link'
 import React from 'react'
 
-const Navbar = () => {
+const Navbar = async() => {
+  const user = await currentUser()
+  
   return (
     <div
       className="absolute  top-0 left-0 z-40 flex items-center w-full bg-primary ud-header"
@@ -80,19 +84,22 @@ const Navbar = () => {
               </nav>
             </div>
             <div className="flex items-center justify-end pr-16 lg:pr-0">
-              <div className="hidden sm:flex">
-                <a
-                  href="signin.html"
-                  className="loginBtn px-[22px] py-2 text-base font-medium text-white hover:opacity-70"
-                >
-                  Sign In
-                </a>
-                {/* <a
-                  href="signup.html"
-                  className="px-6 py-2 text-base font-medium text-white duration-300 ease-in-out rounded-md bg-white/20 signUpBtn hover:bg-white/100 hover:text-dark"
-                >
-                  Sign Up
-                </a> */}
+              <div className="hidden sm:flex gap-4 items-center">
+              {user && (
+                  <Link className='text-white' href={"/dahboard"}>Dashboard</Link>
+                )}
+                <SignedIn >
+               <UserButton />
+                </SignedIn>
+                <SignedOut>
+                <SignInButton >
+                  <button className="px-6 py-2 text-base font-medium text-white duration-300 ease-in-out rounded-md bg-white/20 signUpBtn hover:bg-white/100 hover:text-dark"
+                  >Sign in</button>
+                </SignInButton>
+              
+                </SignedOut>
+                
+                
               </div>
             </div>
           </div>
