@@ -1,6 +1,8 @@
+import { createVideo } from "@/actions/geminiai"
 import Navbar from "@/components/nav/nav"
 
-const Home = () => {
+const Home = async() => {
+  // createVideo()
   return (
     <div>home</div>
   )

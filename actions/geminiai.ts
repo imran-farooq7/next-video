@@ -1,0 +1,23 @@
+import { GoogleGenAI } from "@google/genai";
+const defaultMessage = "Create a 30 second long ADVENTURE STORY video script. Include AI imageprompts in FANTASY FORMAT for each scene in realistic format. Provide the result in JSON format with 'image' and 'text' fields."
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
+
+export async function createVideo(message: string = defaultMessage) {
+  const response = await ai.models.generateContent({
+    model: "gemini-2.0-flash",
+    contents: message,
+  });
+  const res = response.text
+  const data = res?.replace(/```json|\n```/g, "").trim();
+  return data
+// let jsonData
+// try {
+//     jsonData = JSON.parse(data!)
+//     console.log(jsonData)
+//     return jsonData
+// } catch (error) {
+//     console.log(error)
+//     jsonData = data
+// }
+}
+
