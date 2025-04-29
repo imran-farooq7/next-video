@@ -86,7 +86,7 @@ const Navbar = async() => {
             <div className="flex items-center justify-end pr-16 lg:pr-0">
               <div className="hidden sm:flex gap-4 items-center">
               {user && (
-                  <Link className='text-white' href={"/dahboard"}>Dashboard</Link>
+                  <Link className='text-white' href={"/dashboard"}>Dashboard</Link>
                 )}
                 <SignedIn >
                <UserButton />
