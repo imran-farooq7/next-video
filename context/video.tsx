@@ -28,7 +28,7 @@ interface VideoContextType {
     handleCustomPromptChange:(e:ChangeEvent<HTMLInputElement>) => void
     handleSubmit:() => void
 }
-const VideoContext = createContext<VideoContextType | null>(null)
+export const VideoContext = createContext<VideoContextType | null>(null)
 export const VideoProvider = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(false)
     const [script, setScript] = useState(intialState.script)
