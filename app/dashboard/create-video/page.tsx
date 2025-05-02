@@ -13,6 +13,8 @@ const CreateVideo = () => {
     handleCustomPromptChange,
     handleSelectedStoryChange,
     handleSelectedStyleChange,
+    handleSubmit,
+    loading,
   } = ctx!;
   return (
     <div className="container mx-auto px-4 pt-20">
@@ -88,10 +90,14 @@ const CreateVideo = () => {
       <button
         type="button"
         disabled={!selectedStory || (!selectedStyle && !customPrompt)}
-        onClick={() => console.log("Create Video")}
+        onClick={handleSubmit}
         className={`rounded-sm mt-20 mb-4 w-full cursor-pointer bg-emerald-500 md:w-1/4 block mx-auto h-14 text-base font-semibold text-white shadow-xs hover:bg-emerald-600 focus-visible:outline-2 focus-visible:outline-offset-2 `}
       >
-        Create Video
+        {loading ? (
+          <span className="animate-pulse ease-in-out">Please wait...</span>
+        ) : (
+          "Create Video"
+        )}
       </button>
     </div>
   );
