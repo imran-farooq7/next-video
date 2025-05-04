@@ -35,10 +35,11 @@ interface VideoContextType {
   handleSelectedStyleChange: (style: string) => void;
   handleCustomPromptChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: () => void;
+  loadingMessage: string;
 }
 export const VideoContext = createContext<VideoContextType | null>(null);
 export const VideoProvider = ({ children }: { children: ReactNode }) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [script, setScript] = useState(intialState.script);
   const [images, setImages] = useState(intialState.images);
   const [audio, setAudio] = useState(intialState.audio);
@@ -46,7 +47,9 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
   const [selectedStory, setSelectedStory] = useState(intialState.selectedStory);
   const [selectedStyle, setSelectedStyle] = useState(intialState.selectedStyle);
   const [customPrompt, setCustomPrompt] = useState("");
-  const [loadingMessage, setLoadingMessage] = useState("");
+  const [loadingMessage, setLoadingMessage] = useState(
+    "Generating video script"
+  );
   const handleStoryChange = (story: string) => {
     setSelectedStory(story);
     if (story !== "Custom Prompt") {
@@ -102,6 +105,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
         handleSelectedStyleChange: handleStyleChange,
         handleCustomPromptChange,
         handleSubmit,
+        loadingMessage,
       }}
     >
       {children}

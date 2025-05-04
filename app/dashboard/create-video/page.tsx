@@ -1,5 +1,6 @@
 "use client";
 
+import Modal from "@/components/modal/modal";
 import { VideoContext } from "@/context/video";
 import { storyOptions, styleOptions } from "@/lib/constants";
 import { useContext } from "react";
@@ -99,6 +100,7 @@ const CreateVideo = () => {
           "Create Video"
         )}
       </button>
+      <Modal />
     </div>
   );
 };
