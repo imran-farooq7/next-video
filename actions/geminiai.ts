@@ -1,5 +1,5 @@
 "use server";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
@@ -42,18 +42,41 @@ export async function createVideo(message: string = defaultMessage) {
   // }
 }
 
-export async function uploadToCloudinary(filePath: string) {
+export const generateImageAi = async (prompt: string) => {
   try {
-    const result = await cloudinary.uploader.upload(filePath);
-    return {
-      status: "success",
-      url: result.secure_url,
-    };
+    let imageUrl: string = "";
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash-exp-image-generation",
+      contents: prompt,
+      config: {
+        responseModalities: [Modality.TEXT, Modality.IMAGE],
+      },
+    });
+    for (const part of response.candidates?.[0]?.content?.parts || []) {
+      // Based on the part type, either show the text or save the image
+      if (part.text) {
+        console.log(part.text);
+      } else if (part.inlineData) {
+        const imageData = part.inlineData.data;
+        const buffer = Buffer.from(imageData!, "base64");
+        const uploadResponse: any = await new Promise((res, rej) => {
+          cloudinary.uploader
+            .upload_stream({ folder: "ai-images" }, (err, result) => {
+              if (err) return rej(err);
+              res(result);
+            })
+            .end(buffer);
+        });
+        imageUrl = uploadResponse.secure_url;
+      }
+    }
+    console.log(imageUrl);
   } catch (error) {
-    console.error("Cloudinary upload error:", error);
+    console.log(error);
     return {
       status: "error",
       message: error,
     };
   }
-}
+};
