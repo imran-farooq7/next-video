@@ -71,7 +71,8 @@ export const generateImageAi = async (prompt: string) => {
         imageUrl = uploadResponse.secure_url;
       }
     }
-    console.log(imageUrl);
+    return imageUrl;
+    // console.log(imageUrl);
   } catch (error) {
     console.log(error);
     return {

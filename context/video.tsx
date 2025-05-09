@@ -1,5 +1,5 @@
 "use client";
-import { createVideo } from "@/actions/geminiai";
+import { createVideo, generateImageAi } from "@/actions/geminiai";
 import {
   useState,
   ReactNode,
@@ -39,7 +39,7 @@ interface VideoContextType {
 }
 export const VideoContext = createContext<VideoContextType | null>(null);
 export const VideoProvider = ({ children }: { children: ReactNode }) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [script, setScript] = useState(intialState.script);
   const [images, setImages] = useState(intialState.images);
   const [audio, setAudio] = useState(intialState.audio);
@@ -67,19 +67,44 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       const res = await createVideo(
-        `create a 30 second long ${
+        `Create a 30 second long ${
           customPrompt || selectedStory
-        } video script. included AI imagePrompt for each scene in ${selectedStyle}.Provide the result in JSON format with 'image' and 'text' fields.`
+        } video script. Include AI imagePrompt for each scene in ${selectedStyle} format. Provide the result in JSON format with 'imagePrompt' and 'textContent' fields.`
       );
       if (res.status === "error") {
         setLoading(false);
         setLoadingMessage("Failed to generate video script.");
-      } else {
-        console.log(res.data);
       }
 
       setLoadingMessage("Generating video script...");
+      if (res.data?.length! >= 1) {
+        setLoadingMessage("Generating images from the script");
+        const data = JSON.parse(res.data!);
+        const imagesPrompt = data.map(async (item: any) => {
+          try {
+            const imageUrl = await generateImageAi(item.imagePrompt);
+            return imageUrl;
+          } catch (error) {
+            console.log(error);
+          }
+        });
+        const images = await Promise.all(imagesPrompt);
+        console.log(images, "images from promise all");
+        const validImages = images.filter(
+          (image) => image !== null || undefined
+        );
+        console.log(validImages, "valid images");
+        if (validImages.length === 0) {
+          setLoading(false);
+          setLoadingMessage("Failed to generate images.");
+          return;
+        }
+        setImages(validImages);
+      }
     } catch (error) {
+      console.log(error);
+      setLoading(false);
+      setLoadingMessage("Failed to generate video script.");
     } finally {
       setLoading(false);
       setLoadingMessage("");
