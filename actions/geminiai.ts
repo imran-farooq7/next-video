@@ -1,12 +1,6 @@
 "use server";
+import { cloud } from "@/lib/utils";
 import { GoogleGenAI, Modality } from "@google/genai";
-import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
-  api_key: process.env.CLOUDINARY_API_KEY!,
-  api_secret: process.env.CLOUDINARY_API_SECRET!,
-});
 
 const defaultMessage =
   "Create a 30 second long ADVENTURE STORY video script. Include AI imageprompts in FANTASY FORMAT for each scene in realistic format. Provide the result in JSON format with 'image' and 'text' fields.";
@@ -61,8 +55,8 @@ export const generateImageAi = async (prompt: string) => {
         const imageData = part.inlineData.data;
         const buffer = Buffer.from(imageData!, "base64");
         const uploadResponse: any = await new Promise((res, rej) => {
-          cloudinary.uploader
-            .upload_stream({ folder: "ai-images" }, (err, result) => {
+          cloud.uploader
+            .upload_stream({ folder: "ai-images" }, (err: any, result: any) => {
               if (err) return rej(err);
               res(result);
             })
