@@ -1,5 +1,5 @@
 "use server";
-import { cloud } from "@/lib/utils";
+import cloudinary from "@/lib/utils";
 import { GoogleGenAI, Modality } from "@google/genai";
 
 const defaultMessage =
@@ -55,7 +55,7 @@ export const generateImageAi = async (prompt: string) => {
         const imageData = part.inlineData.data;
         const buffer = Buffer.from(imageData!, "base64");
         const uploadResponse: any = await new Promise((res, rej) => {
-          cloud.uploader
+          cloudinary.uploader
             .upload_stream({ folder: "ai-images" }, (err: any, result: any) => {
               if (err) return rej(err);
               res(result);

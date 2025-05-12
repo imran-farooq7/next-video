@@ -1,5 +1,6 @@
 "use client";
 import { createVideo, generateImageAi } from "@/actions/geminiai";
+import { createAudio } from "@/actions/murf";
 import {
   useState,
   ReactNode,
@@ -37,6 +38,10 @@ interface VideoContextType {
   handleSubmit: () => void;
   loadingMessage: string;
 }
+type VideoScript = {
+  textContent: string;
+  imagePrompt: string;
+};
 export const VideoContext = createContext<VideoContextType | null>(null);
 export const VideoProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(false);
@@ -69,7 +74,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
       const res = await createVideo(
         `Create a 30 second long ${
           customPrompt || selectedStory
-        } video script. Include AI imagePrompt for each scene in ${selectedStyle} format. Provide the result in JSON format with 'imagePrompt' and 'textContent' fields.`
+        } video script. Include AI imagePrompt for each scene in ${selectedStyle} format. Provide the result in JSON format with 'imagePrompt' and 'textContent' fields. don't mention time durtion in the json format`
       );
       if (res.status === "error") {
         setLoading(false);
@@ -100,6 +105,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
           return;
         }
         setImages(validImages);
+        const audioUrl = await generateAudio(data);
       }
     } catch (error) {
       console.log(error);
@@ -108,6 +114,21 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
       setLoadingMessage("");
+    }
+  };
+  const generateAudio = async (videoRes: VideoScript[]) => {
+    setLoading(true);
+    setLoadingMessage("Generating audio from the script...");
+    try {
+      const scripts = videoRes.map((item) => item.textContent).join(" ");
+      const audioUrl = await createAudio(scripts);
+      console.log(audioUrl, "audio url");
+      setAudio(audioUrl);
+      return audioUrl;
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      setLoadingMessage("Failed to generate audio.");
     }
   };
   return (

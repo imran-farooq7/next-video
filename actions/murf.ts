@@ -1,6 +1,5 @@
 "use server";
-import { cloud } from "@/lib/utils";
-import fs from "fs";
+import cloudinary from "@/lib/utils";
 
 export const createAudio = async (text: string) => {
   const data = {
@@ -25,7 +24,7 @@ export const createAudio = async (text: string) => {
   const audioBuffer = Buffer.from(base64Audio, "base64");
   // const filePath = `output_${Date.now()}.mp3`;
   const uploadResponse: any = await new Promise((res, rej) => {
-    cloud.uploader
+    cloudinary.uploader
       .upload_stream(
         { resource_type: "video", folder: "ai-audios" },
         (err: any, result: any) => {
