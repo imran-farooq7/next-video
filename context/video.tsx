@@ -1,4 +1,5 @@
 "use client";
+import { createCaptions } from "@/actions/assemblyai";
 import { createVideo, generateImageAi } from "@/actions/geminiai";
 import { createAudio } from "@/actions/murf";
 import {
@@ -106,6 +107,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
         }
         setImages(validImages);
         const audioUrl = await generateAudio(data);
+        await generateCaptions(audioUrl);
       }
     } catch (error) {
       console.log(error);
@@ -129,6 +131,18 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
       console.log(error);
       setLoading(false);
       setLoadingMessage("Failed to generate audio.");
+    }
+  };
+  const generateCaptions = async (audioUrl: string) => {
+    setLoadingMessage("Generating captions from the audio");
+    try {
+      const transcript = await createCaptions(audioUrl);
+      if (transcript) {
+        setCaptions(transcript);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoadingMessage("Failed to generate captions.");
     }
   };
   return (
