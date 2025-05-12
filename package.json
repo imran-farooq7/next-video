@@ -12,6 +12,7 @@
     "@clerk/nextjs": "^6.18.0",
     "@google/genai": "^0.10.0",
     "@headlessui/react": "^2.2.2",
+    "assemblyai": "^4.12.2",
     "cloudinary": "^2.6.1",
     "next": "15.3.1",
     "react": "^19.0.0",
