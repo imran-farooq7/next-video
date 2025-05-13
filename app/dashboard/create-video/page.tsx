@@ -3,6 +3,7 @@
 import Modal from "@/components/modal/modal";
 import { VideoContext } from "@/context/video";
 import { storyOptions, styleOptions } from "@/lib/constants";
+import RemotionPlayer from "@/remotion/remotion-player";
 import { useContext } from "react";
 
 const CreateVideo = () => {
@@ -104,7 +105,7 @@ const CreateVideo = () => {
         <Modal />
       </div>
       <div className="flex justify-center h-screen items-center">
-        <h1 className="text-7xl text-emerald-400">Video render</h1>
+        <RemotionPlayer />
       </div>
     </div>
   );
