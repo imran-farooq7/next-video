@@ -97,7 +97,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
         const images = await Promise.all(imagesPrompt);
         console.log(images, "images from promise all");
         const validImages = images.filter(
-          (image) => image !== null || undefined
+          (image) => image !== null || undefined || image.status === "error"
         );
         console.log(validImages, "valid images");
         if (validImages.length === 0) {

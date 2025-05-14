@@ -17,6 +17,9 @@ const CreateVideo = () => {
     handleSelectedStyleChange,
     handleSubmit,
     loading,
+    captions,
+    images,
+    audio,
   } = ctx!;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -105,7 +108,10 @@ const CreateVideo = () => {
         <Modal />
       </div>
       <div className="flex justify-center h-screen items-center">
-        <RemotionPlayer />
+        {captions && images && audio && <RemotionPlayer />}
+        {!captions ||
+          !images ||
+          (!audio && <p className="text-4xl text-red-600">No video data</p>)}
       </div>
     </div>
   );
