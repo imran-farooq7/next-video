@@ -7,6 +7,7 @@ import {
   useVideoConfig,
   Audio,
   useCurrentFrame,
+  interpolate,
 } from "remotion";
 const RemotionVideo = () => {
   const { audio, captions, images } = useContext(VideoContext)!;
@@ -27,34 +28,47 @@ const RemotionVideo = () => {
   };
   return (
     <AbsoluteFill>
-      {images.map((img, i) => (
-        <Sequence
-          key={i}
-          from={(i * totalDuration) / images.length} // Start each
-          durationInFrames={totalDuration}
-        >
-          <Img
-            src={img}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              margin: "auto",
-            }}
-          />
-          <AbsoluteFill
-            style={{
-              alignItems: "center",
-              justifyContent: "center",
-              display: "flex",
-            }}
+      {images.map((img, i) => {
+        const startFrame = (i * totalDuration) / images.length;
+        const endFrame = startFrame + totalDuration;
+        const opacity =
+          i === 0
+            ? 1
+            : interpolate(
+                frame,
+                [startFrame, startFrame + 50, endFrame - 50, endFrame],
+                [0, 1, 1, 0]
+              );
+        return (
+          <Sequence
+            key={i}
+            from={(i * totalDuration) / images.length} // Start each
+            durationInFrames={totalDuration}
           >
-            <h2 className="text-white text-center text-4xl">
-              {currentCaption()}
-            </h2>
-          </AbsoluteFill>
-        </Sequence>
-      ))}
+            <Img
+              src={img}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                margin: "auto",
+                opacity,
+              }}
+            />
+            <AbsoluteFill
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                display: "flex",
+              }}
+            >
+              <h2 className="text-white text-center text-4xl">
+                {currentCaption()}
+              </h2>
+            </AbsoluteFill>
+          </Sequence>
+        );
+      })}
       <Audio src={audio} />
     </AbsoluteFill>
   );
