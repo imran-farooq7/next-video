@@ -28,6 +28,7 @@ const RemotionVideo = () => {
           />
         </Sequence>
       ))}
+      <Audio src={audio} />
     </AbsoluteFill>
   );
 };
