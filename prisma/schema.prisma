@@ -8,4 +8,14 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
-        
+model Video {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userEmail String
+  userName  String
+  videoScript Json
+  images   Json
+  audioUrl String
+  captions Json
+}        
