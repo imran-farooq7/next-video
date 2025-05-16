@@ -2,6 +2,7 @@
 import { createCaptions } from "@/actions/assemblyai";
 import { createVideo, generateImageAi } from "@/actions/geminiai";
 import { createAudio } from "@/actions/murf";
+import { saveVideo } from "@/actions/video";
 import {
   useState,
   ReactNode,
@@ -73,7 +74,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       const res = await createVideo(
-        `Create a 30 second long ${
+        `Create a 10 second long ${
           customPrompt || selectedStory
         } video script. Include AI imagePrompt for each scene in ${selectedStyle} format. Provide the result in JSON format with 'imagePrompt' and 'textContent' fields. don't mention time durtion in the json format`
       );
@@ -106,8 +107,26 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
           return;
         }
         setImages(validImages);
+        const scripts = data
+          .map((item: VideoScript) => item.textContent)
+          .join(" ");
+        console.log(scripts, "script");
         const audioUrl = await generateAudio(data);
-        await generateCaptions(audioUrl);
+        const captions = await generateCaptions(audioUrl);
+        if (captions && audioUrl && images && scripts) {
+          console.log("enter in action");
+          const video = {
+            captions,
+            audioUrl,
+            images,
+            videoScript: scripts,
+          };
+          setLoadingMessage(
+            "Saving video to the database. This may take a few minutes"
+          );
+          await saveVideo(video);
+          setLoadingMessage("Video saved successfully");
+        }
       }
     } catch (error) {
       console.log(error);
@@ -140,6 +159,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
       if (transcript) {
         setCaptions(transcript);
       }
+      return transcript;
     } catch (error) {
       console.log(error);
       setLoadingMessage("Failed to generate captions.");

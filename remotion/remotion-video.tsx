@@ -26,19 +26,40 @@ const RemotionVideo = () => {
     );
     return currentCaption ? (currentCaption as any).text : "";
   };
+  // Function to calculate opacity
+  const calculateOpacity = (
+    index: number,
+    frame: number,
+    startFrame: number,
+    endFrame: number
+  ): number => {
+    // Log values for debugging
+    console.log("Calculating opacity for index:", index);
+    console.log("Start Frame:", startFrame);
+    console.log("Start Frame + 50:", startFrame + 50);
+    console.log("End Frame:", endFrame);
+    // Ensure frames are strictly increasing
+    if (startFrame >= endFrame) {
+      console.warn("Invalid frame range:", { startFrame, endFrame });
+      return 1; // Default opacity
+    }
+    // Calculate input range for interpolation
+    const inputRange = [startFrame, startFrame + 50, endFrame - 50, endFrame];
+    // Ensure inputRange is strictly increasing
+    const uniqueInputRange = Array.from(new Set(inputRange)).sort(
+      (a, b) => a - b
+    );
+    return index === 0
+      ? 1 // First image is fully visible
+      : interpolate(frame, uniqueInputRange, [0, 1, 1, 0]);
+  };
+
   return (
     <AbsoluteFill>
       {images.map((img, i) => {
         const startFrame = (i * totalDuration) / images.length;
         const endFrame = startFrame + totalDuration;
-        const opacity =
-          i === 0
-            ? 1
-            : interpolate(
-                frame,
-                [startFrame, startFrame + 50, endFrame - 50, endFrame],
-                [0, 1, 1, 0]
-              );
+        const opacity = calculateOpacity(i, frame, startFrame, endFrame);
         return (
           <Sequence
             key={i}
