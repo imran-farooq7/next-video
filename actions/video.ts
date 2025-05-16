@@ -26,3 +26,23 @@ export const saveVideo = async (video: any) => {
     };
   }
 };
+export const getUserVideos = async () => {
+  const user = await currentUser();
+  try {
+    const videos = await prisma.video.findMany({
+      where: {
+        userEmail: user?.emailAddresses[0].emailAddress!,
+      },
+    });
+    return {
+      status: "success",
+      data: videos,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: "error",
+      message: "Error fetching videos",
+    };
+  }
+};
