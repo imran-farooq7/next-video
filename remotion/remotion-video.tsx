@@ -9,8 +9,12 @@ import {
   useCurrentFrame,
   interpolate,
 } from "remotion";
-const RemotionVideo = () => {
-  const { audio, captions, images } = useContext(VideoContext)!;
+const RemotionVideo = ({ images = [], audio = "", captions = [] }) => {
+  const {
+    audio: audioUrl,
+    captions: videoCaptions,
+    images: videoImages,
+  } = useContext(VideoContext)!;
   const { fps } = useVideoConfig();
   const frame = useCurrentFrame();
   // Calculate total duration based on captions
