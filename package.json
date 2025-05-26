@@ -12,6 +12,7 @@
     "@clerk/nextjs": "^6.18.0",
     "@google/genai": "^0.10.0",
     "@headlessui/react": "^2.2.2",
+    "@paypal/react-paypal-js": "^8.8.3",
     "@prisma/client": "^5.22.0",
     "@remotion/cli": "4.0.301",
     "@remotion/player": "4.0.301",
