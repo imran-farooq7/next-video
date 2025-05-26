@@ -21,6 +21,7 @@
     "next": "15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
     "remotion": "4.0.301"
   },
   "devDependencies": {

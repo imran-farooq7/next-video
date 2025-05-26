@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/nav/nav";
 import { VideoProvider } from "@/context/video";
 import { PayPalProvider } from "@/context/paypal";
+import { Toaster } from "react-hot-toast";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export default function RootLayout({
             <body className={` ${poppins.className}antialiased`}>
               <Navbar />
               {children}
+              <Toaster />
             </body>
           </html>
         </VideoProvider>
