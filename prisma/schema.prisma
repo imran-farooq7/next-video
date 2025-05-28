@@ -19,3 +19,8 @@ model Video {
   audioUrl String
   captions Json
 }        
+model Credit {
+  userEmail String @id
+  credits  Int    
+  amount  Int
+}
