@@ -3,6 +3,7 @@ import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import Loading from "../loading";
+import { saveCredits } from "@/actions/credits";
 
 const BuyCreditsPage = () => {
   const [{ isPending }, dispatch] = usePayPalScriptReducer();
@@ -22,7 +23,20 @@ const BuyCreditsPage = () => {
     },
   ];
   const handleSuccess = async (details: any) => {
-    console.log(details);
+    const amount = Number(details.purchase_units[0].amount.value);
+    const credits = Number(details.purchase_units[0].custom_id);
+    try {
+      await saveCredits(amount, credits);
+
+      toast.success(
+        `Successfully purchased ${credits} credits for $${amount.toFixed(2)}!`
+      );
+    } catch (error) {
+      console.error("Error saving credits:", error);
+      toast.error(
+        "An error occurred while saving your credits. Please try again."
+      );
+    }
   };
   const handleError = (error: any) => {
     console.error("PayPal error:", error);
