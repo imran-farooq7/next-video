@@ -40,3 +40,21 @@ export const saveCredits = async (amount: number, credits: number) => {
     console.error(error);
   }
 };
+export const getUserCredits = async () => {
+  try {
+    const user = await currentUser();
+    const userEmail = user?.emailAddresses[0]?.emailAddress;
+    const credits = await prisma.credit.findFirst({
+      where: {
+        userEmail: userEmail!,
+      },
+      select: {
+        credits: true,
+      },
+    });
+    return credits;
+  } catch (error) {
+    console.error(error);
+    return { amount: 0, credits: 0 };
+  }
+};
