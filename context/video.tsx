@@ -1,8 +1,10 @@
 "use client";
 import { createCaptions } from "@/actions/assemblyai";
+import { getUserCredits } from "@/actions/credits";
 import { createVideo, generateImageAi } from "@/actions/geminiai";
 import { createAudio } from "@/actions/murf";
 import { saveVideo } from "@/actions/video";
+import { get } from "http";
 import {
   useState,
   ReactNode,
@@ -10,6 +12,7 @@ import {
   SetStateAction,
   createContext,
   ChangeEvent,
+  useEffect,
 } from "react";
 const intialState = {
   script: "",
@@ -39,6 +42,8 @@ interface VideoContextType {
   handleCustomPromptChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: () => void;
   loadingMessage: string;
+  credits: number;
+  setCredits: Dispatch<SetStateAction<number>>;
 }
 type VideoScript = {
   textContent: string;
@@ -57,6 +62,21 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
   const [loadingMessage, setLoadingMessage] = useState(
     "Generating video script"
   );
+  const [credits, setCredits] = useState(0);
+  const getUserCreditsFromDb = async () => {
+    try {
+      const userCredits = await getUserCredits();
+      if (userCredits) {
+        setCredits(userCredits.credits);
+      }
+    } catch (error) {
+      console.error("Error fetching user credits:", error);
+    }
+  };
+  useEffect(() => {
+    getUserCreditsFromDb();
+  }, []);
+
   const handleStoryChange = (story: string) => {
     setSelectedStory(story);
     if (story !== "Custom Prompt") {
@@ -186,6 +206,8 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
         handleCustomPromptChange,
         handleSubmit,
         loadingMessage,
+        credits,
+        setCredits,
       }}
     >
       {children}
