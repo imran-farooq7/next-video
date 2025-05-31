@@ -1,13 +1,16 @@
 "use client";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import toast from "react-hot-toast";
 import Loading from "../loading";
 import { saveCredits } from "@/actions/credits";
+import { VideoContext } from "@/context/video";
 
 const BuyCreditsPage = () => {
-  const [{ isPending }, dispatch] = usePayPalScriptReducer();
+  const [{ isPending }] = usePayPalScriptReducer();
   const [selected, setSelected] = useState({ credits: 50, price: 10.0 });
+  const ctx = useContext(VideoContext);
+  const { credits } = ctx!;
   const creditsPrice = [
     {
       credits: 50,
@@ -54,8 +57,10 @@ const BuyCreditsPage = () => {
           <h3 className="text-2xl font-semibold leading-6 text-emerald-500">
             Buy Credits
           </h3>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500">
-            Purchase credits to use for various features.
+          <p className="mt-3">
+            You currently have{" "}
+            <span className="font-bold text-emerald-500">{credits}</span>{" "}
+            credits
           </p>
         </div>
         <div className="px-4 flex flex-col justify-between gap-8 py-5 sm:p-6">
