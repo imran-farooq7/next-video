@@ -2,6 +2,7 @@
 
 import prisma from "@/prisma/prisma";
 import { currentUser } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 
 export const saveCredits = async (amount: number, credits: number) => {
   try {
@@ -57,4 +58,28 @@ export const getUserCredits = async () => {
     console.error(error);
     return { amount: 0, credits: 0 };
   }
+};
+export const checkCredits = async () => {
+  try {
+    const user = await currentUser();
+    const userEmail = user?.emailAddresses[0]?.emailAddress;
+    const credits = await prisma.credit.findFirst({
+      where: {
+        userEmail: userEmail!,
+      },
+      select: {
+        credits: true,
+      },
+    });
+    if (!credits) {
+      const credits = await prisma.credit.create({
+        data: {
+          userEmail: userEmail!,
+          amount: 0,
+          credits: 10,
+        },
+      });
+      return credits;
+    }
+  } catch (error) {}
 };

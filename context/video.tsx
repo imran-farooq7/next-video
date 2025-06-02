@@ -1,10 +1,11 @@
 "use client";
 import { createCaptions } from "@/actions/assemblyai";
-import { getUserCredits } from "@/actions/credits";
+import { checkCredits, getUserCredits } from "@/actions/credits";
 import { createVideo, generateImageAi } from "@/actions/geminiai";
 import { createAudio } from "@/actions/murf";
 import { saveVideo } from "@/actions/video";
 import { get } from "http";
+import { useRouter } from "next/navigation";
 import {
   useState,
   ReactNode,
@@ -13,6 +14,7 @@ import {
   createContext,
   ChangeEvent,
   useEffect,
+  use,
 } from "react";
 const intialState = {
   script: "",
@@ -63,11 +65,13 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
     "Generating video script"
   );
   const [credits, setCredits] = useState(0);
+  // const router = useRouter();
   const getUserCreditsFromDb = async () => {
     try {
       const userCredits = await getUserCredits();
-      if (userCredits) {
-        setCredits(userCredits.credits);
+      if (userCredits?.credits! > 0) {
+        setCredits(userCredits?.credits!);
+        // router.refresh();
       }
     } catch (error) {
       console.error("Error fetching user credits:", error);
@@ -75,6 +79,13 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
   };
   useEffect(() => {
     getUserCreditsFromDb();
+  }, []);
+  useEffect(() => {
+    checkCredits().then((res) => {
+      if (res?.credits) {
+        setCredits(res?.credits);
+      }
+    });
   }, []);
 
   const handleStoryChange = (story: string) => {
