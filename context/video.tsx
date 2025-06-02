@@ -155,8 +155,13 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
           setLoadingMessage(
             "Saving video to the database. This may take a few minutes"
           );
-          await saveVideo(video);
-          setLoadingMessage("Video saved successfully");
+          const { success, message, credits } = await saveVideo(video);
+          if (!success) {
+            setLoadingMessage(message);
+          } else {
+            setCredits(credits!);
+            setLoadingMessage("Video saved successfully!");
+          }
         }
       }
     } catch (error) {

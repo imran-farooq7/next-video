@@ -5,6 +5,31 @@ import { Video } from "@prisma/client";
 
 export const saveVideo = async (video: any) => {
   const user = await currentUser();
+  const userCredits = await prisma.credit.findFirst({
+    where: {
+      userEmail: user?.emailAddresses[0].emailAddress!,
+    },
+    select: {
+      credits: true,
+    },
+  });
+  if (!userCredits || userCredits.credits <= 1) {
+    return {
+      success: false,
+      message: "You do not have enough credits to save a video",
+    };
+  } else {
+    userCredits.credits -= 1;
+    const credits = await prisma.credit.update({
+      where: {
+        userEmail: user?.emailAddresses[0].emailAddress!,
+      },
+      data: {
+        credits: userCredits.credits,
+      },
+    });
+  }
+
   const newVideo = {
     ...video,
     userName: user?.fullName!,
@@ -17,6 +42,7 @@ export const saveVideo = async (video: any) => {
     return {
       success: true,
       message: "Video saved successfully",
+      credits: userCredits.credits,
     };
   } catch (error) {
     console.log(error);
