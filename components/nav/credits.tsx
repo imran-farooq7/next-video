@@ -8,7 +8,7 @@ const Credits = () => {
   const { credits } = ctx!;
   const [total, setTotal] = useState(credits);
   return (
-    <div className="bg-white rounded-2xl px-8 py-2 text-emerald-500 font-semibold">
+    <div className="bg-black rounded-2xl px-8 py-2 text-white font-semibold">
       Credits:{credits}
     </div>
   );
