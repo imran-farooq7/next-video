@@ -22,7 +22,7 @@ const CreateVideo = () => {
     audio,
   } = ctx!;
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2">
+    <div className=" mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2">
       <div className="container mx-auto px-4 pt-20 ">
         <h1 className="text-2xl font-bold mb-5">Create Your Video</h1>
         <div>
