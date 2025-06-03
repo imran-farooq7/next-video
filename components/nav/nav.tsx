@@ -1,14 +1,6 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-  UserProfile,
-} from "@clerk/nextjs";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { SignedIn, SignInButton, UserButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
-import React from "react";
-import Creadits from "./credits";
 import Credits from "./credits";
 
 const Navbar = async () => {

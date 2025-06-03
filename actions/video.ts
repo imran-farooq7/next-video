@@ -1,7 +1,6 @@
 "use server";
 import prisma from "@/prisma/prisma";
 import { currentUser } from "@clerk/nextjs/server";
-import { Video } from "@prisma/client";
 
 export const saveVideo = async (video: any) => {
   const user = await currentUser();
