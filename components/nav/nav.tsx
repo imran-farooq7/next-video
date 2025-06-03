@@ -50,9 +50,11 @@ const Navbar = async () => {
             </>
           )}
           {!user && (
-            <button className="cursor-pointer">
-              <SignInButton>Sign in</SignInButton>
-            </button>
+            <SignInButton>
+              <button className="cursor-pointer bg-emerald-500 text-white px-6 py-2 rounded-lg hover:bg-emerald-600 transition-colors">
+                Sign in
+              </button>
+            </SignInButton>
           )}
         </div>
       </div>
