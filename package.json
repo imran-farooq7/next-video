@@ -12,17 +12,24 @@
     "@clerk/nextjs": "^6.18.0",
     "@google/genai": "^0.10.0",
     "@headlessui/react": "^2.2.2",
+    "@paypal/react-paypal-js": "^8.8.3",
+    "@prisma/client": "^5.22.0",
+    "@remotion/cli": "4.0.301",
+    "@remotion/player": "4.0.301",
     "assemblyai": "^4.12.2",
     "cloudinary": "^2.6.1",
     "next": "15.3.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-hot-toast": "^2.5.2",
+    "remotion": "4.0.301"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "prisma": "^5.22.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

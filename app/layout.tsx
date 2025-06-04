@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import {Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/nav/nav";
 import { VideoProvider } from "@/context/video";
+import { PayPalProvider } from "@/context/paypal";
+import { Toaster } from "react-hot-toast";
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: [ "300", "500", "600", "700"],
+  weight: ["300", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -21,17 +23,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <VideoProvider>
-    <html lang="en">
-      <body
-        className={` ${poppins.className}antialiased`}
-      >
-        <Navbar />
-        {children}
-      </body>
-    </html>
-    </VideoProvider>
-    </ClerkProvider>
+    <PayPalProvider>
+      <ClerkProvider>
+        <VideoProvider>
+          <html lang="en">
+            <body className={` ${poppins.className}antialiased`}>
+              <Navbar />
+              {children}
+              <Toaster />
+            </body>
+          </html>
+        </VideoProvider>
+      </ClerkProvider>
+    </PayPalProvider>
   );
 }

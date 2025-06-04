@@ -1,7 +1,11 @@
 "use client";
 import { createCaptions } from "@/actions/assemblyai";
+import { checkCredits, getUserCredits } from "@/actions/credits";
 import { createVideo, generateImageAi } from "@/actions/geminiai";
 import { createAudio } from "@/actions/murf";
+import { saveVideo } from "@/actions/video";
+import { get } from "http";
+import { useRouter } from "next/navigation";
 import {
   useState,
   ReactNode,
@@ -9,6 +13,8 @@ import {
   SetStateAction,
   createContext,
   ChangeEvent,
+  useEffect,
+  use,
 } from "react";
 const intialState = {
   script: "",
@@ -38,6 +44,9 @@ interface VideoContextType {
   handleCustomPromptChange: (e: ChangeEvent<HTMLInputElement>) => void;
   handleSubmit: () => void;
   loadingMessage: string;
+  credits: number;
+  setCredits: Dispatch<SetStateAction<number>>;
+  getUserCreditsFromDb: () => Promise<void>;
 }
 type VideoScript = {
   textContent: string;
@@ -56,6 +65,30 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
   const [loadingMessage, setLoadingMessage] = useState(
     "Generating video script"
   );
+  const [credits, setCredits] = useState(0);
+  // const router = useRouter();
+  const getUserCreditsFromDb = async () => {
+    try {
+      const userCredits = await getUserCredits();
+      if (userCredits?.credits! > 0) {
+        setCredits(userCredits?.credits!);
+        // router.refresh();
+      }
+    } catch (error) {
+      console.error("Error fetching user credits:", error);
+    }
+  };
+  useEffect(() => {
+    getUserCreditsFromDb();
+  }, []);
+  useEffect(() => {
+    checkCredits().then((res) => {
+      if (res?.credits) {
+        setCredits(res?.credits);
+      }
+    });
+  }, []);
+
   const handleStoryChange = (story: string) => {
     setSelectedStory(story);
     if (story !== "Custom Prompt") {
@@ -73,7 +106,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       const res = await createVideo(
-        `Create a 30 second long ${
+        `Create a 10 second long ${
           customPrompt || selectedStory
         } video script. Include AI imagePrompt for each scene in ${selectedStyle} format. Provide the result in JSON format with 'imagePrompt' and 'textContent' fields. don't mention time durtion in the json format`
       );
@@ -97,7 +130,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
         const images = await Promise.all(imagesPrompt);
         console.log(images, "images from promise all");
         const validImages = images.filter(
-          (image) => image !== null || undefined
+          (image) => image !== null || undefined || image.status === "error"
         );
         console.log(validImages, "valid images");
         if (validImages.length === 0) {
@@ -106,8 +139,31 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
           return;
         }
         setImages(validImages);
+        const scripts = data
+          .map((item: VideoScript) => item.textContent)
+          .join(" ");
+        console.log(scripts, "script");
         const audioUrl = await generateAudio(data);
-        await generateCaptions(audioUrl);
+        const captions = await generateCaptions(audioUrl);
+        if (captions && audioUrl && images && scripts) {
+          console.log("enter in action");
+          const video = {
+            captions,
+            audioUrl,
+            images,
+            videoScript: scripts,
+          };
+          setLoadingMessage(
+            "Saving video to the database. This may take a few minutes"
+          );
+          const { success, message, credits } = await saveVideo(video);
+          if (!success) {
+            setLoadingMessage(message);
+          } else {
+            setCredits(credits!);
+            setLoadingMessage("Video saved successfully!");
+          }
+        }
       }
     } catch (error) {
       console.log(error);
@@ -140,6 +196,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
       if (transcript) {
         setCaptions(transcript);
       }
+      return transcript;
     } catch (error) {
       console.log(error);
       setLoadingMessage("Failed to generate captions.");
@@ -166,6 +223,9 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
         handleCustomPromptChange,
         handleSubmit,
         loadingMessage,
+        credits,
+        setCredits,
+        getUserCreditsFromDb,
       }}
     >
       {children}
