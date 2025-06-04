@@ -10,7 +10,7 @@ const BuyCreditsPage = () => {
   const [{ isPending }] = usePayPalScriptReducer();
   const [selected, setSelected] = useState({ credits: 50, price: 10.0 });
   const ctx = useContext(VideoContext);
-  const { credits } = ctx!;
+  const { credits, getUserCreditsFromDb } = ctx!;
   const creditsPrice = [
     {
       credits: 50,
@@ -30,6 +30,7 @@ const BuyCreditsPage = () => {
     const credits = Number(details.purchase_units[0].custom_id);
     try {
       await saveCredits(amount, credits);
+      await getUserCreditsFromDb();
 
       toast.success(
         `Successfully purchased ${credits} credits for $${amount.toFixed(2)}!`

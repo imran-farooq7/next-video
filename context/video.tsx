@@ -46,6 +46,7 @@ interface VideoContextType {
   loadingMessage: string;
   credits: number;
   setCredits: Dispatch<SetStateAction<number>>;
+  getUserCreditsFromDb: () => Promise<void>;
 }
 type VideoScript = {
   textContent: string;
@@ -224,6 +225,7 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
         loadingMessage,
         credits,
         setCredits,
+        getUserCreditsFromDb,
       }}
     >
       {children}
