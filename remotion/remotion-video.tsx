@@ -2,12 +2,12 @@ import { VideoContext } from "@/context/video";
 import { useContext } from "react";
 import {
   AbsoluteFill,
-  Img,
-  Sequence,
-  useVideoConfig,
   Audio,
-  useCurrentFrame,
+  Img,
   interpolate,
+  Sequence,
+  useCurrentFrame,
+  useVideoConfig,
 } from "remotion";
 const RemotionVideo = ({ images = [], audio = "", captions = [] }) => {
   const {

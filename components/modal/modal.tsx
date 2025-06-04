@@ -1,11 +1,6 @@
 "use client";
 import { VideoContext } from "@/context/video";
-import {
-  Dialog,
-  DialogBackdrop,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
 import { useContext } from "react";
 import Loader from "../loader/loader";
 

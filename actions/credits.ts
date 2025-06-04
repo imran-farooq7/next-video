@@ -2,7 +2,6 @@
 
 import prisma from "@/prisma/prisma";
 import { currentUser } from "@clerk/nextjs/server";
-import { revalidatePath } from "next/cache";
 
 export const saveCredits = async (amount: number, credits: number) => {
   try {
